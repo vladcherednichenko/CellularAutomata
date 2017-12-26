@@ -76,7 +76,7 @@ public class GameControl : MonoBehaviour {
             randomSeed = false;
         }
 
-
+        GUI.Label(new Rect(410, 10, 50, 50), "Click to generate map");
 
 
     }
