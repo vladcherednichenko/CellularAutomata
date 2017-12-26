@@ -10,6 +10,7 @@ public class MapGenerator : MonoBehaviour {
     [SerializeField]
     private int height;
 
+    public int borderSize = 1;
 
     [SerializeField]
     [Range(0,100)]
@@ -26,7 +27,12 @@ public class MapGenerator : MonoBehaviour {
     }
 	
 	void Update () {
-		if (Input.GetMouseButtonDown(0))
+        randomFillPercent = GameControl.entity.fillPercentage;
+        borderSize = GameControl.entity.borderSize;
+        seed = GameControl.entity.seed;
+        useRandomSeed = GameControl.entity.randomSeed;
+
+        if (Input.GetMouseButtonDown(0))
         {
             GenerateMap();
         }
@@ -42,8 +48,25 @@ public class MapGenerator : MonoBehaviour {
             SmoothMap();
         }
 
+        int[,] borderedMap = new int[width + borderSize * 2, height + borderSize * 2];
+
+        for (int x = 0; x < borderedMap.GetLength(0); x++)
+        {
+            for (int y = 0; y < borderedMap.GetLength(1); y++)
+            {
+                if (x >= borderSize && x < width + borderSize && y >= borderSize && y < height + borderSize)
+                {
+                    borderedMap[x, y] = map[x - borderSize, y - borderSize];
+                }
+                else
+                {
+                    borderedMap[x, y] = 1;
+                }
+            }
+        }
+
         MeshGenerator meshGen = GetComponent<MeshGenerator>();
-        meshGen.GenerateMesh(map, 1);
+        meshGen.GenerateMesh(borderedMap, 1);
     }
 
     private void RandomFillMap()
